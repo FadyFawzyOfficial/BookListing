@@ -16,13 +16,8 @@ public class BookActivity extends AppCompatActivity
         super.onCreate( savedInstanceState );
         setContentView( R.layout.activity_book );
         
-        // Create a list of books
-        ArrayList< Book > books = new ArrayList<>();
-        books.add( new Book( "Android How to Program", "Fady Fawzi", 3.5, 300 ) );
-        books.add( new Book( "Java How to Program", "Fady Fawzi", 5.0, 350 ) );
-        books.add( new Book( "Head First Java", "Max Payne", 4.5, 230 ) );
-        books.add( new Book( "Head First Android", "Max Payne", 5.0, 159 ) );
-        books.add( new Book( "Pro Git", "John Doe", 4.0, 450 ) );
+        // Get the list of books from {@link QueryUtils}
+        ArrayList< Book > books = QueryUtils.extractBooks();
         
         // Find a reference to the {@link ListView} in the layout
         ListView bookListView = findViewById( R.id.book_list_view );
