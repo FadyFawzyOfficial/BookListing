@@ -473,17 +473,23 @@ public class QueryUtils
                 double averageRating = volumeInfo.getDouble( "averageRating" );
                 
                 // For a given book, extract the JSONObject associated with the
-                // key called "saleInfo" and "listPrice",
+                // key called "saleInfo" and "retailPrice",
                 // which represents price for that book (current book).
                 JSONObject saleInfo = currentBook.getJSONObject( "saleInfo" );
-                JSONObject listPrice = saleInfo.getJSONObject( "listPrice" );
+                JSONObject retailPrice = saleInfo.getJSONObject( "retailPrice" );
                 
                 // Extract the value for the key called "amount" (the book price).
-                double price = listPrice.getDouble( "amount" );
+                double amount = retailPrice.getDouble( "amount" );
+                
+                // Extract the value for the key called "currencyCode" (the book local currency).
+                String currencyCode = retailPrice.getString( "currencyCode" );
+                
+                // combine the price value (amount) with the local currency acronym (currencyCode)
+                String localPrice = currencyCode + "  " + amount;
                 
                 // Create a new {@link Book} object with the title, author, average rate and price
                 // from the JSON response.
-                Book book = new Book( title, authors, averageRating, price );
+                Book book = new Book( title, authors, averageRating, localPrice );
                 
                 // Add the new {@link Book} to the list of books.
                 books.add( book );

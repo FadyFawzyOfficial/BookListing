@@ -73,7 +73,7 @@ public class BookAdapter extends ArrayAdapter< Book >
         // Find the TextView with view id rate_text_view
         TextView priceTextView = listItemView.findViewById( R.id.price_text_view );
         // Display the author(s) of the current book in that TextView
-        priceTextView.setText( String.valueOf( currentBook.getPrice() ) );
+        priceTextView.setText( String.valueOf( currentBook.getLocalPrice() ) );
         
         // Return the whole list item layout so that it can shown the appropriate data
         // in the ListView

@@ -23,7 +23,7 @@ public class Book
     /**
      * Price of the book
      */
-    private double price;
+    private String localPrice;
     
     /**
      * Constructors a new {@link Book} object.
@@ -31,14 +31,14 @@ public class Book
      * @param title         is the book title
      * @param author        is the book author or authors
      * @param averageRating is the average rating the book got
-     * @param price         is the book price in local currency
+     * @param localPrice    is the book localPrice in local currency
      */
-    public Book( String title, String author, double averageRating, double price )
+    public Book( String title, String author, double averageRating, String localPrice )
     {
         this.title = title;
         this.author = author;
         this.averageRating = averageRating;
-        this.price = price;
+        this.localPrice = localPrice;
     }
     
     /**
@@ -72,12 +72,12 @@ public class Book
     }
     
     /**
-     * Return the price (in local currency) of the book.
+     * Return the localPrice (in local currency) of the book.
      *
      * @return
      */
-    public double getPrice()
+    public String getLocalPrice()
     {
-        return price;
+        return localPrice;
     }
 }
