@@ -1,34 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Layout for a single list item that displays a book -->
 <LinearLayout
 	xmlns:android = "http://schemas.android.com/apk/res/android"
 	xmlns:tools = "http://schemas.android.com/tools"
 	android:layout_width = "match_parent"
-	android:layout_height = "match_parent"
-	android:orientation = "vertical"
+	android:layout_height = "wrap_content"
+	android:orientation = "horizontal"
 	android:padding = "16dp">
 	
-	<TextView
-		android:id = "@+id/title_text_view"
-		android:layout_width = "match_parent"
+	<LinearLayout
+		android:layout_width = "0dp"
 		android:layout_height = "wrap_content"
-		tools:text = "Android" />
+		android:layout_gravity = "center_vertical"
+		android:layout_weight = "1"
+		android:orientation = "vertical">
+		
+		<TextView
+			android:id = "@+id/title_text_view"
+			android:layout_width = "wrap_content"
+			android:layout_height = "wrap_content"
+			android:ellipsize = "end"
+			android:maxLines = "1"
+			android:textSize = "24sp"
+			tools:text = "Android" />
+		
+		<TextView
+			android:id = "@+id/author_text_view"
+			android:layout_width = "wrap_content"
+			android:layout_height = "wrap_content"
+			android:ellipsize = "end"
+			android:maxLines = "1"
+			android:textSize = "16sp"
+			tools:text = "John Doe" />
 	
-	<TextView
-		android:id = "@+id/author_text_view"
-		android:layout_width = "match_parent"
-		android:layout_height = "wrap_content"
-		tools:text = "John Doe" />
+	</LinearLayout>
 	
-	<TextView
-		android:id = "@+id/rate_text_view"
-		android:layout_width = "match_parent"
+	<LinearLayout
+		android:layout_width = "wrap_content"
 		android:layout_height = "wrap_content"
-		tools:text = "4.5" />
+		android:layout_gravity = "center_vertical"
+		android:layout_marginStart = "16dp"
+		android:layout_marginLeft = "16dp"
+		android:orientation = "vertical">
+		
+		<LinearLayout
+			android:layout_width = "wrap_content"
+			android:layout_height = "wrap_content"
+			android:layout_gravity = "end">
+			
+			<ImageView
+				android:layout_width = "24dp"
+				android:layout_height = "24dp"
+				android:src = "@mipmap/star"
+				android:tint = "@color/colorAccent" />
+			
+			<TextView
+				android:id = "@+id/rate_text_view"
+				android:layout_width = "wrap_content"
+				android:layout_height = "wrap_content"
+				android:layout_gravity = "center_vertical"
+				android:textSize = "16sp"
+				tools:text = "4.5" />
+		
+		</LinearLayout>
+		
+		<TextView
+			android:id = "@+id/price_text_view"
+			android:layout_width = "wrap_content"
+			android:layout_height = "wrap_content"
+			android:layout_gravity = "end"
+			android:textSize = "16sp"
+			tools:text = "EGP 312" />
 	
-	<TextView
-		android:id = "@+id/price_text_view"
-		android:layout_width = "match_parent"
-		android:layout_height = "wrap_content"
-		tools:text = "312" />
+	</LinearLayout>
 
 </LinearLayout>
