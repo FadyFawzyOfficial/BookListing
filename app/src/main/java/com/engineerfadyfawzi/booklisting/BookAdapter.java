@@ -1,6 +1,8 @@
 package com.engineerfadyfawzi.booklisting;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,7 +55,7 @@ public class BookAdapter extends ArrayAdapter< Book >
                     R.layout.book_list_item, parent, false );
         
         // Get the {@link Book} object at the given position in the list of books
-        Book currentBook = getItem( position );
+        final Book currentBook = getItem( position );
         
         // Find the TextView in the book_list_item.xml layout with view id title_text_view
         TextView titleTextView = listItemView.findViewById( R.id.title_text_view );
@@ -75,8 +77,26 @@ public class BookAdapter extends ArrayAdapter< Book >
         // Display the author(s) of the current book in that TextView
         priceTextView.setText( String.valueOf( currentBook.getLocalPrice() ) );
         
-        // Return the whole list item layout so that it can shown the appropriate data
-        // in the ListView
+        // Set a click listener on the ListView, which sends an intent to a web browser
+        // or Google Play (in this case).
+        // to open a website (google play) with more information about the selected book.
+        listItemView.setOnClickListener( new View.OnClickListener()
+        {
+            @Override
+            public void onClick( View view )
+            {
+                // Convert the String URL into a URI object (to pass into the Intent constructor)
+                Uri bookUri = Uri.parse( currentBook.getPreviewUrl() );
+                
+                // Create a new intent to preview the book information
+                Intent previewIntent = new Intent( Intent.ACTION_VIEW, bookUri );
+                
+                // Send the intent to launch a new activity (google paly book preview page)
+                getContext().startActivity( previewIntent );
+            }
+        } );
+        
+        // Return the whole list item layout so that it can shown the appropriate data in the ListView
         return listItemView;
     }
 }

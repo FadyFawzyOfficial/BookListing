@@ -487,9 +487,12 @@ public class QueryUtils
                 // combine the price value (amount) with the local currency acronym (currencyCode)
                 String localPrice = currencyCode + "  " + amount;
                 
-                // Create a new {@link Book} object with the title, author, average rate and price
-                // from the JSON response.
-                Book book = new Book( title, authors, averageRating, localPrice );
+                // Extract the value for the key called "canonicalVolumeLink" (preview link or url)
+                String previewUrl = volumeInfo.getString( "canonicalVolumeLink" );
+                
+                // Create a new {@link Book} object with the title, author, average rate, price
+                // and preview link from the JSON response.
+                Book book = new Book( title, authors, averageRating, localPrice, previewUrl );
                 
                 // Add the new {@link Book} to the list of books.
                 books.add( book );

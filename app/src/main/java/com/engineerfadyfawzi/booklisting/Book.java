@@ -26,19 +26,26 @@ public class Book
     private String localPrice;
     
     /**
+     * URL of the book (On Google Play)
+     */
+    private String previewUrl;
+    
+    /**
      * Constructors a new {@link Book} object.
      *
      * @param title         is the book title
      * @param author        is the book author or authors
      * @param averageRating is the average rating the book got
      * @param localPrice    is the book localPrice in local currency
+     * @param previewUrl    is the google play URL to find more details about the book
      */
-    public Book( String title, String author, double averageRating, String localPrice )
+    public Book( String title, String author, double averageRating, String localPrice, String previewUrl )
     {
         this.title = title;
         this.author = author;
         this.averageRating = averageRating;
         this.localPrice = localPrice;
+        this.previewUrl = previewUrl;
     }
     
     /**
@@ -79,5 +86,15 @@ public class Book
     public String getLocalPrice()
     {
         return localPrice;
+    }
+    
+    /**
+     * Return the google play URL to find more information about the book.
+     *
+     * @return
+     */
+    public String getPreviewUrl()
+    {
+        return previewUrl;
     }
 }
