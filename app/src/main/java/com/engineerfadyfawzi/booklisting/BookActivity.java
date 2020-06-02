@@ -1,15 +1,17 @@
 package com.engineerfadyfawzi.booklisting;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.loader.app.LoaderManager;
+import androidx.loader.app.LoaderManager.LoaderCallbacks;
+import androidx.loader.content.Loader;
 
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.widget.ListView;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class BookActivity extends AppCompatActivity
+public class BookActivity extends AppCompatActivity implements LoaderCallbacks< List< Book > >
 {
     /**
      * Tag for the log messages
@@ -21,6 +23,12 @@ public class BookActivity extends AppCompatActivity
      */
     private static final String BOOKS_REQUEST_URL =
             "https://www.googleapis.com/books/v1/volumes?q=android&maxResults=10";
+    
+    /**
+     * Constant value for the earthquake loader ID. We can choose any integer.
+     * This really only comes into play if you're using multiple loaders.
+     */
+    private static final int BOOK_LOADER_ID = 1; // First loader #1
     
     /**
      * Adapter for the list of books
@@ -44,70 +52,64 @@ public class BookActivity extends AppCompatActivity
         // so the list can be populated in the user interface
         bookListView.setAdapter( bookAdapter );
         
-        // Start the AsyncTask to fetch the book data
-        new BookAsyncTask().execute( BOOKS_REQUEST_URL );
+        // Get a reference to the LoaderManager, in order to interact with loaders.
+        LoaderManager loaderManager = getSupportLoaderManager();
+        
+        // Initialize the loader. pass in the int ID constant defined above and pass in null for
+        // the bundle. Pass in this activity for the LoaderCallbacks parameter (which is valid
+        // because this activity implements the LoaderCallbacks interface).
+        loaderManager.initLoader( BOOK_LOADER_ID, null, this );
     }
     
     /**
-     * {@link AsyncTask} to perform the network request on a background thread, and then update
-     * the UI with the list of books in the response.
+     * We need onCreateLoader(), for when the LoaderManager has determined that the loader with
+     * our specified ID isn't running, so we should create a new one.
      *
-     * AsyncTask has three generic parameters: the input type , a type used for progress updates, and
-     * an output type. Our task will take a String URL , and return an Book.
-     * We won't do progress updates, so the second generic is just Void.
+     * @param id   of the loader
+     * @param args
      *
-     * We'll only override two of the methods of AsyncTask: doInBackground() and onPostExecute().
-     * The doInBackground() method runs on a background thread, so it can run long running code
-     * (like network activity), without interfering with the responsiveness  of the app.
-     * Then onPostExecute() is passed the result of doInBackground() method, but runs on the
-     * UI thread (main thread), so it can use the produced data to update the UI.
+     * @return
      */
-    private class BookAsyncTask extends AsyncTask< String, Void, List< Book > >
+    @Override
+    public Loader< List< Book > > onCreateLoader( int id, Bundle args )
     {
-        /**
-         * This method runs on a background thread and performs the network request.
-         * We should not update the UI from a background thread, so we return a list of
-         * {@link Book}s as the result.
-         *
-         * @param urls
-         *
-         * @return
-         */
-        @Override
-        protected List< Book > doInBackground( String... urls )
-        {
-            // Don't preform the request if there are no URLs, or the first URL is null.
-            if ( urls.length < 1 || urls[ 0 ] == null )
-                return null;
-            
-            // Preform the HTTP request for book data and process the response.
-            // Get the list of books form {@link QueryUtils}
-            List< Book > bookList = QueryUtils.fetchBookData( urls[ 0 ] );
-            
-            // Return the {@link Book} objects as the result of the {@link BookAsyncTask}
-            return bookList;
-        }
+        // Create a new loader for the given URL
+        return new BookLoader( this, BOOKS_REQUEST_URL );
+    }
+    
+    /**
+     * We need onLoadFinished(), where we'll do exactly what we did in onPostExecute(),
+     * and use the earthquake data to update our UI - by updating the data set in the adapter.
+     *
+     * @param loader
+     * @param bookList
+     */
+    @Override
+    public void onLoadFinished( Loader< List< Book > > loader, List< Book > bookList )
+    {
+        // Clear teh adapter of previous book data
+        bookAdapter.clear();
         
-        /**
-         * This method runs on the main UI thread after background work has been completed.
-         * This method receives as input, the return value form the doInBackground() method.
-         *
-         * First we clear out the adapter , to get new list of Book data from a previous query to API.
-         * Then we update the adapter with the new list of books,
-         * which will trigger the ListView to re-populate its list items.
-         *
-         * @param bookList
-         */
-        @Override
-        protected void onPostExecute( List< Book > bookList )
-        {
-            // Clear teh adapter of previous book data
-            bookAdapter.clear();
-            
-            // If there is a valid list of {link Book}s , then add them to the adapters's data set.
-            // This will trigger the ListView to update.
-            if ( bookList != null && !bookList.isEmpty() )
-                bookAdapter.addAll( bookList );
-        }
+        // If there is a valid list of {link Book}s , then add them to the adapters's data set.
+        // This will trigger the ListView to update.
+        if ( bookList != null && !bookList.isEmpty() )
+            // Update teh UI with result
+            bookAdapter.addAll( bookList );
+    }
+    
+    /**
+     * We need onLoadReset(), we're being informed that the data from our loader is no longer valid.
+     * This isn't actually a case that's going to come up with our simple loader,
+     * but the correct but the correct thing to do is to remove all the books data from our UI
+     * by clearing out the adapter's data set.
+     *
+     * @param loader
+     */
+    @Override
+    public void onLoaderReset( Loader< List< Book > > loader )
+    {
+        // Loader reset, so we can clear out our existing data.
+        // Clear teh adatper of previous books data
+        bookAdapter.clear();
     }
 }
