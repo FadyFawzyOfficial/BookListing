@@ -35,7 +35,7 @@ public class QueryUtils
      */
     private QueryUtils()
     {
-        
+    
     }
     
     /**
@@ -231,22 +231,46 @@ public class QueryUtils
                 String authors = getAuthors( volumeInfo );
                 
                 // Extract the value for the key called "averageRating" (the book authors).
-                double averageRating = volumeInfo.getDouble( "averageRating" );
+                double averageRating = 0;
+                
+                // If the averageRating key/value is missing, set averageRating to 0.0.
+                try
+                {
+                    averageRating = volumeInfo.getDouble( "averageRating" );
+                }
+                catch ( JSONException jsonException )
+                {
+                    averageRating = 0.0;
+                    jsonException.printStackTrace();
+                }
                 
                 // For a given book, extract the JSONObject associated with the
                 // key called "saleInfo" and "retailPrice",
                 // which represents price for that book (current book).
                 JSONObject saleInfo = currentBook.getJSONObject( "saleInfo" );
-                JSONObject retailPrice = saleInfo.getJSONObject( "retailPrice" );
                 
-                // Extract the value for the key called "amount" (the book price).
-                double amount = retailPrice.getDouble( "amount" );
+                String localPrice = "";
                 
-                // Extract the value for the key called "currencyCode" (the book local currency).
-                String currencyCode = retailPrice.getString( "currencyCode" );
-                
-                // combine the price value (amount) with the local currency acronym (currencyCode)
-                String localPrice = currencyCode + "  " + amount;
+                // try to get the local price of the book from the API.
+                // If it's not available (the key is missing)
+                // set it to the saleability (NOT_FOR_SALE).
+                try
+                {
+                    JSONObject retailPrice = saleInfo.getJSONObject( "retailPrice" );
+                    
+                    // Extract the value for the key called "amount" (the book price).
+                    double amount = retailPrice.getDouble( "amount" );
+                    
+                    // Extract the value for the key called "currencyCode" (the book local currency).
+                    String currencyCode = retailPrice.getString( "currencyCode" );
+                    
+                    // combine the price value (amount) with the local currency acronym (currencyCode)
+                    localPrice = currencyCode + "  " + amount;
+                }
+                catch ( JSONException jsonException )
+                {
+                    localPrice = saleInfo.getString( "saleability" );
+                }
                 
                 // Extract the value for the key called "canonicalVolumeLink" (preview link or url)
                 String previewUrl = volumeInfo.getString( "canonicalVolumeLink" );
