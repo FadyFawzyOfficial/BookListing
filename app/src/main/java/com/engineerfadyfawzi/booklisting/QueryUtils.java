@@ -26,7 +26,7 @@ public class QueryUtils
     /**
      * Tag for the log messages
      */
-    private static final String LOG_TAG = QueryUtils.class.getSimpleName();
+    private static final String TAG = QueryUtils.class.getSimpleName();
     
     /**
      * Create a private constructor because no on should ever create a {@link QueryUtils} object.
@@ -47,6 +47,8 @@ public class QueryUtils
      */
     public static List< Book > fetchBookData( String stringUrl )
     {
+        Log.i( TAG, "TEST: fetchBookData() called ..." );
+        
         // Create URL object
         URL url = createUrl( stringUrl );
         
@@ -77,7 +79,7 @@ public class QueryUtils
         }
         catch ( MalformedURLException malformedURLException )
         {
-            Log.e( LOG_TAG, "Problem building the URL", malformedURLException );
+            Log.e( TAG, "Problem building the URL", malformedURLException );
             malformedURLException.printStackTrace();
         }
         
@@ -106,7 +108,7 @@ public class QueryUtils
         {
             urlConnection = ( HttpURLConnection ) url.openConnection();
             urlConnection.setRequestMethod( "GET" );
-            urlConnection.setReadTimeout( 1000 /* milliseconds */ );
+            urlConnection.setReadTimeout( 10000 /* milliseconds */ );
             urlConnection.setConnectTimeout( 15000 /* milliseconds */ );
             urlConnection.connect();
             
@@ -119,11 +121,11 @@ public class QueryUtils
                 jsonResponse = readFromStream( inputStream );
             }
             else
-                Log.e( LOG_TAG, "Error response code: " + responseCode );
+                Log.e( TAG, "Error response code: " + responseCode );
         }
         catch ( IOException ioException )
         {
-            Log.e( LOG_TAG, "Problem retrieving the book JSON results.", ioException );
+            Log.e( TAG, "Problem retrieving the book JSON results.", ioException );
             ioException.printStackTrace();
         }
         finally
@@ -140,7 +142,7 @@ public class QueryUtils
                 }
                 catch ( IOException ioException )
                 {
-                    Log.e( LOG_TAG, "Error closing input stream", ioException );
+                    Log.e( TAG, "Error closing input stream", ioException );
                     ioException.printStackTrace();
                 }
             }
@@ -177,7 +179,7 @@ public class QueryUtils
             }
             catch ( IOException ioException )
             {
-                Log.e( LOG_TAG, "Problem reading from stream", ioException );
+                Log.e( TAG, "Problem reading from stream", ioException );
                 ioException.printStackTrace();
             }
             

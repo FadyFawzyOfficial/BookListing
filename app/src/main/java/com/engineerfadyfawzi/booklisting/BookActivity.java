@@ -6,6 +6,7 @@ import androidx.loader.app.LoaderManager.LoaderCallbacks;
 import androidx.loader.content.Loader;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -38,6 +39,7 @@ public class BookActivity extends AppCompatActivity implements LoaderCallbacks< 
     @Override
     protected void onCreate( Bundle savedInstanceState )
     {
+        Log.i( TAG, "TEST: onCreate() called ..." );
         super.onCreate( savedInstanceState );
         setContentView( R.layout.activity_book );
         
@@ -58,6 +60,7 @@ public class BookActivity extends AppCompatActivity implements LoaderCallbacks< 
         // Initialize the loader. pass in the int ID constant defined above and pass in null for
         // the bundle. Pass in this activity for the LoaderCallbacks parameter (which is valid
         // because this activity implements the LoaderCallbacks interface).
+        Log.i( TAG, "TEST: calling initLoader() ..." );
         loaderManager.initLoader( BOOK_LOADER_ID, null, this );
     }
     
@@ -73,6 +76,8 @@ public class BookActivity extends AppCompatActivity implements LoaderCallbacks< 
     @Override
     public Loader< List< Book > > onCreateLoader( int id, Bundle args )
     {
+        Log.i( TAG, "TEST: onCreateLoader() called ..." );
+        
         // Create a new loader for the given URL
         return new BookLoader( this, BOOKS_REQUEST_URL );
     }
@@ -87,6 +92,8 @@ public class BookActivity extends AppCompatActivity implements LoaderCallbacks< 
     @Override
     public void onLoadFinished( Loader< List< Book > > loader, List< Book > bookList )
     {
+        Log.i( TAG, "TEST: onLoadFinished() called ..." );
+        
         // Clear teh adapter of previous book data
         bookAdapter.clear();
         
@@ -108,8 +115,10 @@ public class BookActivity extends AppCompatActivity implements LoaderCallbacks< 
     @Override
     public void onLoaderReset( Loader< List< Book > > loader )
     {
+        Log.i( TAG, "TEST: onLoaderReset() called ..." );
+        
         // Loader reset, so we can clear out our existing data.
-        // Clear teh adatper of previous books data
+        // Clear teh adapter of previous books data
         bookAdapter.clear();
     }
 }

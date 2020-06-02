@@ -2,6 +2,7 @@ package com.engineerfadyfawzi.booklisting;
 
 import android.content.Context;
 import android.text.TextUtils;
+import android.util.Log;
 
 import java.util.List;
 
@@ -47,6 +48,8 @@ public class BookLoader extends AsyncTaskLoader< List< Book > >
     @Override
     protected void onStartLoading()
     {
+        Log.i( TAG, "TEST: onStartLoading() called ..." );
+        
         forceLoad();
     }
     
@@ -58,6 +61,7 @@ public class BookLoader extends AsyncTaskLoader< List< Book > >
     @Override
     public List< Book > loadInBackground()
     {
+        Log.i( TAG, "TEST: loadInBackground() called ..." );
         
         // Don't preform the request if the URL is null or empty.
         if ( TextUtils.isEmpty( url ) )
