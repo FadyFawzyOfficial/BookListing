@@ -30,6 +30,11 @@ public class BookLoader extends AsyncTaskLoader< List< Book > >
     private String url;
     
     /**
+     * List of books that return from another thread (background thread).
+     */
+    private List< Book > bookList;
+    
+    /**
      * Constructors a new {@link BookLoader}
      *
      * @param context of the activity
@@ -44,13 +49,22 @@ public class BookLoader extends AsyncTaskLoader< List< Book > >
     /**
      * Important: Notice that we also override the onStartLoading() method to call forceLoad()
      * which is a required step to actually trigger the loadInBackground() method to execute.
+     *
+     * I implicitly utilize this method to stop calling loadInBackground() method unnecessarily by
+     * using deliverResult() method which delivers the result of the previous load to the registered
+     * listener's onLoadFinished() method which in turn allows us to skip loadInBackground() call.
      */
     @Override
     protected void onStartLoading()
     {
         Log.i( TAG, "TEST: onStartLoading() called ..." );
         
-        forceLoad();
+        if ( bookList != null )
+            // Use cached data
+            deliverResult( bookList ); // skip loadInBackground() call
+        else
+            // We have no data, so kick off loading it
+            forceLoad(); // call LoadInBackground()
     }
     
     /**
@@ -74,5 +88,15 @@ public class BookLoader extends AsyncTaskLoader< List< Book > >
         
         // Return the {@link Book} objects list as the result of the {@link BookLoader}
         return bookList;
+    }
+    
+    @Override
+    public void deliverResult( List< Book > data )
+    {
+        // We'll save the data for later retrieval
+        bookList = data;
+        // We can do any pre-processing we want here
+        // Just remember this is on the UI thread so nothing lengthy!
+        super.deliverResult( data );
     }
 }
