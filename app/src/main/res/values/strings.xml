@@ -1,3 +1,7 @@
 <resources>
+	<!-- Title for the application. -->
 	<string name = "app_name">Book Listing</string>
+	
+	<!-- Text to display in the list when there are no books -->
+	<string name = "no_books">No books found.</string>
 </resources>

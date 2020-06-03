@@ -8,6 +8,7 @@ import androidx.loader.content.Loader;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +37,11 @@ public class BookActivity extends AppCompatActivity implements LoaderCallbacks< 
      */
     private BookAdapter bookAdapter;
     
+    /**
+     * TextView that is displayed when the list is empty.
+     */
+    private TextView emptyStateTextView;
+    
     @Override
     protected void onCreate( Bundle savedInstanceState )
     {
@@ -49,6 +55,15 @@ public class BookActivity extends AppCompatActivity implements LoaderCallbacks< 
         // Create a new{@link BookAdapter} that takes an empty list of books as input.
         // The adapter knows how to create list items for each item in the list.
         bookAdapter = new BookAdapter( this, new ArrayList< Book >() );
+        
+        // To avoid the "No books found." message blinking on the screen when the when the app first
+        // launches, we can leave the empty state TextView blank, until the first load completes.
+        // In the onLoadFinished callback method, we can set the text to be the string
+        // "No books found." I'ts okay if this text is set every time the loader finishes
+        // because it's not too expensive of an operation. There's always trade offs, and this user
+        // experience is better.
+        emptyStateTextView = findViewById( R.id.empty_view );
+        bookListView.setEmptyView( emptyStateTextView );
         
         // Set the adapter on the {@link ListView}
         // so the list can be populated in the user interface
@@ -93,6 +108,9 @@ public class BookActivity extends AppCompatActivity implements LoaderCallbacks< 
     public void onLoadFinished( Loader< List< Book > > loader, List< Book > bookList )
     {
         Log.i( TAG, "TEST: onLoadFinished() called ..." );
+        
+        // Set empty state text to display "No books found."
+        emptyStateTextView.setText( R.string.no_books );
         
         // Clear teh adapter of previous book data
         bookAdapter.clear();
