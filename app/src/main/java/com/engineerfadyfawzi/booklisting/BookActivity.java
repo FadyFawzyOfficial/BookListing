@@ -5,6 +5,9 @@ import androidx.loader.app.LoaderManager;
 import androidx.loader.app.LoaderManager.LoaderCallbacks;
 import androidx.loader.content.Loader;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -70,14 +73,37 @@ public class BookActivity extends AppCompatActivity implements LoaderCallbacks< 
         // so the list can be populated in the user interface
         bookListView.setAdapter( bookAdapter );
         
-        // Get a reference to the LoaderManager, in order to interact with loaders.
-        LoaderManager loaderManager = getSupportLoaderManager();
+        // Get a reference to the ConnectivityManager to check state of network connectivity
+        ConnectivityManager connectivityManager =
+                ( ConnectivityManager ) getSystemService( Context.CONNECTIVITY_SERVICE );
         
-        // Initialize the loader. pass in the int ID constant defined above and pass in null for
-        // the bundle. Pass in this activity for the LoaderCallbacks parameter (which is valid
-        // because this activity implements the LoaderCallbacks interface).
-        Log.i( TAG, "TEST: calling initLoader() ..." );
-        loaderManager.initLoader( BOOK_LOADER_ID, null, this );
+        // Get details on the currently active default data network
+        NetworkInfo activeNetwork = connectivityManager.getActiveNetworkInfo();
+        
+        // Check if there is a network connection or not and store the result in boolean variable.
+        boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+        
+        // If there is a network connection, fetch data
+        if ( isConnected )
+        {
+            // Get a reference to the LoaderManager, in order to interact with loaders.
+            LoaderManager loaderManager = getSupportLoaderManager();
+            
+            // Initialize the loader. pass in the int ID constant defined above and pass in null for
+            // the bundle. Pass in this activity for the LoaderCallbacks parameter (which is valid
+            // because this activity implements the LoaderCallbacks interface).
+            Log.i( TAG, "TEST: calling initLoader() ..." );
+            loaderManager.initLoader( BOOK_LOADER_ID, null, this );
+        }
+        else // Otherwise, display error
+        {
+            // First, hide loading indicator (spinner) so error message will be visible
+            View loadingIndicator = findViewById( R.id.loading_indicator );
+            loadingIndicator.setVisibility( View.GONE );
+            
+            // Update the empty state with no connection error message
+            emptyStateTextView.setText( R.string.no_internet_connection );
+        }
     }
     
     /**

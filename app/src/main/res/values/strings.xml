@@ -4,4 +4,7 @@
 	
 	<!-- Text to display in the list when there are no books -->
 	<string name = "no_books">No books found.</string>
+	
+	<!-- Error message when there is no internet connectivity -->
+	<string name = "no_internet_connection">No internet connection.</string>
 </resources>
