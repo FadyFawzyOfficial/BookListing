@@ -49,6 +49,27 @@ public class QueryUtils
     {
         Log.i( TAG, "TEST: fetchBookData() called ..." );
         
+        // TEST: Force the background thread to sleep for 3 seconds
+        /*
+         * To force the background thread to sleep for 3 seconds, we are temporarily simulating
+         * a very slow network response time. We are "pretending" that it took a long time to fetch
+         * the response. That allows us to see the loading indicator (spinner) on the screen for a little
+         * longer than it normally would appear for.
+         *
+         * In the QueryUtils.java file, within the fetchBookData() method, we add this snippet of
+         * code at the top of the method. Leave the rest of the code in the method as-is. We are
+         * forcing the background thread to pause execution and wait for 3 seconds (which is 3000
+         * milliseconds), before proceeding to execute the rest of lines of code in this method.
+         */
+        try
+        {
+            Thread.sleep( 3000 );
+        }
+        catch ( InterruptedException interruptedException )
+        {
+            interruptedException.printStackTrace();
+        }
+        
         // Create URL object
         URL url = createUrl( stringUrl );
         
