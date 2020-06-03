@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -46,6 +47,11 @@ public class BookActivity extends AppCompatActivity implements LoaderCallbacks< 
      */
     private TextView emptyStateTextView;
     
+    /**
+     * ProgressBar that is displayed when the app loading (internet connections is poor).
+     */
+    private ProgressBar loadingIndicator;
+    
     @Override
     protected void onCreate( Bundle savedInstanceState )
     {
@@ -53,12 +59,19 @@ public class BookActivity extends AppCompatActivity implements LoaderCallbacks< 
         super.onCreate( savedInstanceState );
         setContentView( R.layout.activity_book );
         
+        getBookData();
+    }
+    
+    /**
+     * Just Code Organization: By collecting all onCreate statements in this one method.
+     */
+    private void getBookData()
+    {
         // Find a reference to the {@link ListView} in the layout
         ListView bookListView = findViewById( R.id.book_list_view );
         
-        // Create a new{@link BookAdapter} that takes an empty list of books as input.
-        // The adapter knows how to create list items for each item in the list.
-        bookAdapter = new BookAdapter( this, new ArrayList< Book >() );
+        // initialize and set the value fo this global loading indicator (spinner)
+        loadingIndicator = findViewById( R.id.loading_indicator );
         
         // To avoid the "No books found." message blinking on the screen when the when the app first
         // launches, we can leave the empty state TextView blank, until the first load completes.
@@ -69,22 +82,16 @@ public class BookActivity extends AppCompatActivity implements LoaderCallbacks< 
         emptyStateTextView = findViewById( R.id.empty_view );
         bookListView.setEmptyView( emptyStateTextView );
         
+        // Create a new{@link BookAdapter} that takes an empty list of books as input.
+        // The adapter knows how to create list items for each item in the list.
+        bookAdapter = new BookAdapter( this, new ArrayList< Book >() );
+        
         // Set the adapter on the {@link ListView}
         // so the list can be populated in the user interface
         bookListView.setAdapter( bookAdapter );
         
-        // Get a reference to the ConnectivityManager to check state of network connectivity
-        ConnectivityManager connectivityManager =
-                ( ConnectivityManager ) getSystemService( Context.CONNECTIVITY_SERVICE );
-        
-        // Get details on the currently active default data network
-        NetworkInfo activeNetwork = connectivityManager.getActiveNetworkInfo();
-        
-        // Check if there is a network connection or not and store the result in boolean variable.
-        boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
-        
         // If there is a network connection, fetch data
-        if ( isConnected )
+        if ( isConnected() )
         {
             // Get a reference to the LoaderManager, in order to interact with loaders.
             LoaderManager loaderManager = getSupportLoaderManager();
@@ -98,12 +105,29 @@ public class BookActivity extends AppCompatActivity implements LoaderCallbacks< 
         else // Otherwise, display error
         {
             // First, hide loading indicator (spinner) so error message will be visible
-            View loadingIndicator = findViewById( R.id.loading_indicator );
             loadingIndicator.setVisibility( View.GONE );
             
             // Update the empty state with no connection error message
             emptyStateTextView.setText( R.string.no_internet_connection );
         }
+    }
+    
+    /**
+     * Check if there is a network connection or not.
+     *
+     * @return
+     */
+    private boolean isConnected()
+    {
+        // Get a reference to the ConnectivityManager to check state of network connectivity
+        ConnectivityManager connectivityManager =
+                ( ConnectivityManager ) getSystemService( Context.CONNECTIVITY_SERVICE );
+        
+        // Get details on the currently active default data network
+        NetworkInfo activeNetwork = connectivityManager.getActiveNetworkInfo();
+        
+        // Check if there is a network connection or not and store the result in boolean variable.
+        return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
     }
     
     /**
@@ -137,7 +161,6 @@ public class BookActivity extends AppCompatActivity implements LoaderCallbacks< 
         Log.i( TAG, "TEST: onLoadFinished() called ..." );
         
         // Hide loading indicator because the data has been loaded
-        View loadingIndicator = findViewById( R.id.loading_indicator );
         loadingIndicator.setVisibility( View.GONE );
         
         // Set empty state text to display "No books found."
