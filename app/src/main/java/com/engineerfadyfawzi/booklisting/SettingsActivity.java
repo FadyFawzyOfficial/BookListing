@@ -2,9 +2,11 @@ package com.engineerfadyfawzi.booklisting;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
 import android.preference.Preference;
+import android.preference.PreferenceManager;
 
 public class SettingsActivity extends AppCompatActivity
 {
@@ -30,12 +32,11 @@ public class SettingsActivity extends AppCompatActivity
         {
             super.onCreate( savedInstanceState );
             addPreferencesFromResource( R.xml.settings_main );
-            
+            // Update the preference summary when the settings activity is launched.
             // Use PreferenceFragment's findPreference() method to get the Preference object and,
             Preference maxResults = findPreference( getString( R.string.settings_max_results_key ) );
-            // Sets the callback to be invoked when this Preference is changed by the user,
-            // (but before the internal state has been updated).
-            maxResults.setOnPreferenceChangeListener( this );
+            // Setup the preference using this helper method.
+            bindPreferenceSummaryToValue( maxResults );
         }
         
         /**
@@ -55,6 +56,30 @@ public class SettingsActivity extends AppCompatActivity
         {
             preference.setSummary( newValue.toString() );
             return true;
+        }
+        
+        /**
+         * Set the current BookPreferenceFragment instance as teh listener on each preference.
+         * We also read the current value of the preference stored in the SharedPreference on
+         * the device, and display that in the preference summary
+         * (so that the user can see the current value of the preference).ء
+         *
+         * @param preference that will show or update it's value
+         */
+        private void bindPreferenceSummaryToValue( Preference preference )
+        {
+            // Sets the callback to be invoked when this Preference is changed by the user
+            // (but before the internal state has been changed).
+            preference.setOnPreferenceChangeListener( this );
+            
+            SharedPreferences sharedPreferences =
+                    PreferenceManager.getDefaultSharedPreferences( preference.getContext() );
+            
+            // getString: returns the preference value if it exists, or default value which is the
+            // second argument of this method (Value to return if this preference does not exist).
+            String preferenceString = sharedPreferences.getString( preference.getKey(), "" );
+            // To display the preference summary on Activity launched.
+            onPreferenceChange( preference, preferenceString );
         }
     }
 }
