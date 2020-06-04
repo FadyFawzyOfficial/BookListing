@@ -7,7 +7,6 @@ import android.preference.PreferenceFragment;
 
 public class SettingsActivity extends AppCompatActivity
 {
-    
     @Override
     protected void onCreate( Bundle savedInstanceState )
     {
@@ -17,6 +16,11 @@ public class SettingsActivity extends AppCompatActivity
     
     public static class BookPreferenceFragment extends PreferenceFragment
     {
-    
+        @Override
+        public void onCreate( Bundle savedInstanceState )
+        {
+            super.onCreate( savedInstanceState );
+            addPreferencesFromResource( R.xml.settings_main );
+        }
     }
 }
