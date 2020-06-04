@@ -24,7 +24,8 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BookActivity extends AppCompatActivity implements LoaderCallbacks< List< Book > >
+public class BookActivity extends AppCompatActivity implements LoaderCallbacks< List< Book > >,
+        SharedPreferences.OnSharedPreferenceChangeListener
 {
     /**
      * Tag for the log messages
@@ -98,6 +99,12 @@ public class BookActivity extends AppCompatActivity implements LoaderCallbacks< 
         // Set the adapter on the {@link ListView}
         // so the list can be populated in the user interface
         bookListView.setAdapter( bookAdapter );
+        
+        // Obtain a reference to the SharedPreference file for this app,
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences( this );
+        // And register to be notified of preference changes,
+        // So we know when the user has adjusted the query settings.
+        sharedPreferences.registerOnSharedPreferenceChangeListener( this );
         
         // If there is a network connection, fetch data
         if ( isConnected() )
@@ -256,5 +263,33 @@ public class BookActivity extends AppCompatActivity implements LoaderCallbacks< 
         }
         
         return super.onOptionsItemSelected( item );
+    }
+    
+    /**
+     * This method called when a shared preference is changed, added or removed.
+     * This may be called even if a preference is set to its existing value.
+     * This callback will be run on your main thread (UI thread).
+     *
+     * @param sharedPreferences The SharedPreference that received the change.
+     * @param preferenceKey     The key of the preference that was changed, added or removed.
+     */
+    @Override
+    public void onSharedPreferenceChanged( SharedPreferences sharedPreferences, String preferenceKey )
+    {
+        if ( preferenceKey.equals( getString( R.string.settings_order_by_key ) ) ||
+                preferenceKey.equals( getString( R.string.settings_max_results_key ) ) )
+        {
+            // Clear the ListView as a new query will be kicked off
+            bookAdapter.clear();
+            
+            // Hide the empty state text view as the loading indicator will be displayed.
+            emptyStateTextView.setVisibility( View.GONE );
+            
+            // Show the loading indicator while new data is being fetched.
+            loadingIndicator.setVisibility( View.VISIBLE );
+            
+            // Restart the loader to re query the Google Books API as the query settings have been updated.
+            getSupportLoaderManager().restartLoader( BOOK_LOADER_ID, null, this );
+        }
     }
 }
