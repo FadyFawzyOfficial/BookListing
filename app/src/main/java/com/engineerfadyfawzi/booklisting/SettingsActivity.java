@@ -32,11 +32,16 @@ public class SettingsActivity extends AppCompatActivity
         {
             super.onCreate( savedInstanceState );
             addPreferencesFromResource( R.xml.settings_main );
+            
             // Update the preference summary when the settings activity is launched.
+            
             // Use PreferenceFragment's findPreference() method to get the Preference object and,
             Preference maxResults = findPreference( getString( R.string.settings_max_results_key ) );
             // Setup the preference using this helper method.
             bindPreferenceSummaryToValue( maxResults );
+            
+            Preference orderBy = findPreference( getString( R.string.settings_order_by_key ) );
+            bindPreferenceSummaryToValue( orderBy );
         }
         
         /**
