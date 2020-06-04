@@ -154,7 +154,7 @@ public class BookActivity extends AppCompatActivity implements LoaderCallbacks< 
         Log.i( TAG, "TEST: onCreateLoader() called ..." );
         
         // Construct a proper URI with the users' preference, and then
-        // create a new loader for the URL built (buildUrlParameters() method)
+        // create a new loader for the URL builder (buildUrlParameters() method)
         return new BookLoader( this, buildUrlParameters() );
     }
     
@@ -165,8 +165,16 @@ public class BookActivity extends AppCompatActivity implements LoaderCallbacks< 
      */
     private String buildUrlParameters()
     {
-        // Read the user's latest preferences for the maximum results,
+        // Read the user's latest preferences for the order by and maximum results preferences
+        // Read from SharedPreferences and check the value associated with the key.
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences( this );
+        
+        // SharedPreference class's getString method: returns the preferences value if it exists,
+        // or default value which is the second argument of this method
+        // (Value to return if this preference doesn't exist).
+        String orderBy = sharedPreferences.getString(
+                getString( R.string.settings_order_by_key ),
+                getString( R.string.settings_order_by_default ) );
         
         String maxResults = sharedPreferences.getString(
                 getString( R.string.settings_max_results_key ),
@@ -177,6 +185,7 @@ public class BookActivity extends AppCompatActivity implements LoaderCallbacks< 
         
         uriBuilder.appendQueryParameter( "q", "Android" );
         uriBuilder.appendQueryParameter( "maxResults", maxResults );
+        uriBuilder.appendQueryParameter( "orderBy", orderBy );
         
         return uriBuilder.toString();
     }
