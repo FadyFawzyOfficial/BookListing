@@ -18,5 +18,18 @@
 	<string name = "settings_max_results_label">Maximum Results</string>
 	<string name = "settings_max_results_key" translatable = "false">max_results</string>
 	<string name = "settings_max_results_default" translatable = "false">20</string>
+	
+	<!-- Strings For Order By Preference -->
+	<string name = "settings_order_by_label">Order By</string>
+	<string name = "settings_order_by_key" translatable = "false">order_by</string>
+	<string name = "settings_order_by_default" translatable = "false">@string/settings_order_by_relevance_value</string>
+	
+	<!-- Label For order_by Relevance Option -->
+	<string name = "settings_order_by_relevance_label">Relevance</string>
+	<string name = "settings_order_by_relevance_value" translatable = "false">relevance</string>
+	
+	<!-- Label For order_by Most Recent (Newest) Option -->
+	<string name = "settings_order_by_newest_label">Most Recent</string>
+	<string name = "settings_order_by_newest_value" translatable = "false">newest</string>
 
 </resources>
