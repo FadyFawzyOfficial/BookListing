@@ -7,9 +7,12 @@ import androidx.loader.content.Loader;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -30,9 +33,12 @@ public class BookActivity extends AppCompatActivity implements LoaderCallbacks< 
     
     /**
      * URL for earthquake data from the Google Books APi data set
+     *
+     * Later we'll use UriBuilder.appendQueryParameter() methods to add additional parameters to
+     * the URI (such as sort order, download and filter).
      */
     private static final String BOOKS_REQUEST_URL =
-            "https://www.googleapis.com/books/v1/volumes?q=android&maxResults=10";
+            "https://www.googleapis.com/books/v1/volumes?q=android";
     
     /**
      * Constant value for the earthquake loader ID. We can choose any integer.
@@ -147,8 +153,32 @@ public class BookActivity extends AppCompatActivity implements LoaderCallbacks< 
     {
         Log.i( TAG, "TEST: onCreateLoader() called ..." );
         
-        // Create a new loader for the given URL
-        return new BookLoader( this, BOOKS_REQUEST_URL );
+        // Construct a proper URI with the users' preference, and then
+        // create a new loader for the URL built (buildUrlParameters() method)
+        return new BookLoader( this, buildUrlParameters() );
+    }
+    
+    /**
+     * Helper method read the user's latest preference and build the query URL parameters.
+     *
+     * @return string url with the user's preferences query parameters added.
+     */
+    private String buildUrlParameters()
+    {
+        // Read the user's latest preferences for the maximum results,
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences( this );
+        
+        String maxResults = sharedPreferences.getString(
+                getString( R.string.settings_max_results_key ),
+                getString( R.string.settings_max_results_default ) );
+        
+        Uri baseUri = Uri.parse( BOOKS_REQUEST_URL );
+        Uri.Builder uriBuilder = baseUri.buildUpon();
+        
+        uriBuilder.appendQueryParameter( "q", "Android" );
+        uriBuilder.appendQueryParameter( "maxResults", maxResults );
+        
+        return uriBuilder.toString();
     }
     
     /**
