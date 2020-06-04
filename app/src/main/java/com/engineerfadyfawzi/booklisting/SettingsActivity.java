@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.ListPreference;
 import android.preference.PreferenceFragment;
 import android.preference.Preference;
 import android.preference.PreferenceManager;
@@ -59,7 +60,25 @@ public class SettingsActivity extends AppCompatActivity
         @Override
         public boolean onPreferenceChange( Preference preference, Object newValue )
         {
-            preference.setSummary( newValue.toString() );
+            String newValueString = newValue.toString();
+            
+            // If preference is ListPreference
+            if ( preference instanceof ListPreference )
+            {
+                // Update the summary fo a ListPreference( using the label, instead of the key).
+                ListPreference listPreference = ( ListPreference ) preference;
+                int prefIndex = listPreference.findIndexOfValue( newValueString );
+                
+                if ( prefIndex >= 0 )
+                {
+                    CharSequence[] labels = listPreference.getEntries();
+                    preference.setSummary( labels[ prefIndex ] );
+                }
+            }
+            else
+                // Update the summary of preference using it's key value
+                preference.setSummary( newValueString );
+            
             return true;
         }
         
