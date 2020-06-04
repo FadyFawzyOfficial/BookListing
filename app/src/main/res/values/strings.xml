@@ -14,4 +14,9 @@
 	<!-- Settings Activity Title -->
 	<string name = "settings_title">Book Settings</string>
 	
+	<!-- Strings For Maximum Results Preference -->
+	<string name = "settings_max_results_label">Maximum Results</string>
+	<string name = "settings_max_results_key" translatable = "false">max_results</string>
+	<string name = "settings_max_results_default" translatable = "false">20</string>
+
 </resources>
