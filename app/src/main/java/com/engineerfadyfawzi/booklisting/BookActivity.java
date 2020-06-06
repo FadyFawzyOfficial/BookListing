@@ -80,23 +80,29 @@ public class BookActivity extends AppCompatActivity implements LoaderCallbacks< 
         Log.i( TAG, "TEST: onCreate() called ..." );
         super.onCreate( savedInstanceState );
         setContentView( R.layout.activity_book );
-        
-        getBookData();
-    }
     
-    /**
-     * Just Code Organization: By collecting all onCreate statements in this one method.
-     */
-    private void getBookData()
-    {
+        // Find a reference to the {@link ListView} in the layout
+        ListView bookListView = findViewById( R.id.book_list_view );
+    
+        // Create a new{@link BookAdapter} that takes an empty list of books as input.
+        // The adapter knows how to create list items for each item in the list.
+        bookAdapter = new BookAdapter( this, new ArrayList< Book >() );
+    
+        // Set the adapter on the {@link ListView}
+        // so the list can be populated in the user interface
+        bookListView.setAdapter( bookAdapter );
+    
+        // Obtain a reference to the SharedPreference file for this app,
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences( this );
+        // And register to be notified of preference changes,
+        // So we know when the user has adjusted the query settings.
+        sharedPreferences.registerOnSharedPreferenceChangeListener( this );
+        
         // Find a reference to the {@link EditText} in the layout
         searchEditText = findViewById( R.id.search_edit_text );
         
         // Find a reference to the {@link Button} to preform search operation
         searchButton = findViewById( R.id.search_button );
-        
-        // Find a reference to the {@link ListView} in the layout
-        ListView bookListView = findViewById( R.id.book_list_view );
         
         // initialize and set the value fo this global loading indicator (spinner)
         loadingIndicator = findViewById( R.id.loading_indicator );
@@ -109,20 +115,6 @@ public class BookActivity extends AppCompatActivity implements LoaderCallbacks< 
         // experience is better.
         emptyStateTextView = findViewById( R.id.empty_view );
         bookListView.setEmptyView( emptyStateTextView );
-        
-        // Create a new{@link BookAdapter} that takes an empty list of books as input.
-        // The adapter knows how to create list items for each item in the list.
-        bookAdapter = new BookAdapter( this, new ArrayList< Book >() );
-        
-        // Set the adapter on the {@link ListView}
-        // so the list can be populated in the user interface
-        bookListView.setAdapter( bookAdapter );
-        
-        // Obtain a reference to the SharedPreference file for this app,
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences( this );
-        // And register to be notified of preference changes,
-        // So we know when the user has adjusted the query settings.
-        sharedPreferences.registerOnSharedPreferenceChangeListener( this );
         
         // If there is a network connection, fetch data
         if ( isConnected() )
