@@ -2,6 +2,12 @@
 	<!-- Title for the application. -->
 	<string name = "app_name">Book Listing</string>
 	
+	<!-- Hint for Search EditText -->
+	<string name = "search_hint">Search Books</string>
+	
+	<!-- Text for Search Button -->
+	<string name = "search_button">Search</string>
+	
 	<!-- Text to display in the list when there are no books -->
 	<string name = "no_books">No books found.</string>
 	

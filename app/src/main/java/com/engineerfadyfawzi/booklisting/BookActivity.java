@@ -17,6 +17,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -62,6 +64,16 @@ public class BookActivity extends AppCompatActivity implements LoaderCallbacks< 
      */
     private ProgressBar loadingIndicator;
     
+    /**
+     * EditText that the user enter the keyword or search topic in.
+     */
+    private EditText searchEditText;
+    
+    /**
+     * Button that the user click to preform search with that keyword.
+     */
+    private Button searchButton;
+    
     @Override
     protected void onCreate( Bundle savedInstanceState )
     {
@@ -77,6 +89,12 @@ public class BookActivity extends AppCompatActivity implements LoaderCallbacks< 
      */
     private void getBookData()
     {
+        // Find a reference to the {@link EditText} in the layout
+        searchEditText = findViewById( R.id.search_edit_text );
+        
+        // Find a reference to the {@link Button} to preform search operation
+        searchButton = findViewById( R.id.search_button );
+        
         // Find a reference to the {@link ListView} in the layout
         ListView bookListView = findViewById( R.id.book_list_view );
         
