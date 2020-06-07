@@ -13,6 +13,7 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -37,11 +38,11 @@ public class BookActivity extends AppCompatActivity implements LoaderCallbacks< 
     /**
      * URL for earthquake data from the Google Books APi data set
      *
-     * Later we'll use UriBuilder.appendQueryParameter() methods to add additional parameters to
-     * the URI (such as sort order, download and filter).
+     * Now we're using UriBuilder.appendQueryParameter() methods to add additional parameters to
+     * the URI (such as topic, order by, max number of results download and filter).
      */
     private static final String BOOKS_REQUEST_URL =
-            "https://www.googleapis.com/books/v1/volumes?q=android";
+            "https://www.googleapis.com/books/v1/volumes";
     
     /**
      * Constant value for the earthquake loader ID. We can choose any integer.
@@ -74,6 +75,11 @@ public class BookActivity extends AppCompatActivity implements LoaderCallbacks< 
      */
     private Button searchButton;
     
+    /**
+     * The "word" that the user enter in input text field to search for.
+     */
+    private String searchKeyword;
+    
     @Override
     protected void onCreate( Bundle savedInstanceState )
     {
@@ -104,7 +110,7 @@ public class BookActivity extends AppCompatActivity implements LoaderCallbacks< 
         // Find a reference to the {@link Button} to preform search operation
         searchButton = findViewById( R.id.search_button );
         
-        // initialize and set the value fo this global loading indicator (spinner)
+        // Initialize and set the value fo this global loading indicator (spinner)
         loadingIndicator = findViewById( R.id.loading_indicator );
         
         // To avoid the "No books found." message blinking on the screen when the when the app first
@@ -115,6 +121,9 @@ public class BookActivity extends AppCompatActivity implements LoaderCallbacks< 
         // experience is better.
         emptyStateTextView = findViewById( R.id.empty_view );
         bookListView.setEmptyView( emptyStateTextView );
+    
+        // Get the user search input "word" to search for it.
+        searchKeyword = String.valueOf( searchEditText.getText() );
         
         // If there is a network connection, fetch data
         if ( isConnected() )
@@ -200,7 +209,7 @@ public class BookActivity extends AppCompatActivity implements LoaderCallbacks< 
         Uri baseUri = Uri.parse( BOOKS_REQUEST_URL );
         Uri.Builder uriBuilder = baseUri.buildUpon();
         
-        uriBuilder.appendQueryParameter( "q", "Android" );
+        uriBuilder.appendQueryParameter( "q", searchKeyword );
         uriBuilder.appendQueryParameter( "maxResults", maxResults );
         uriBuilder.appendQueryParameter( "orderBy", orderBy );
         
@@ -222,8 +231,12 @@ public class BookActivity extends AppCompatActivity implements LoaderCallbacks< 
         // Hide loading indicator because the data has been loaded
         loadingIndicator.setVisibility( View.GONE );
         
-        // Set empty state text to display "No books found."
-        emptyStateTextView.setText( R.string.no_books );
+        if ( TextUtils.isEmpty( searchKeyword ) )
+            // Set empty state text to display search message
+            emptyStateTextView.setText( R.string.search_message );
+        else
+            // Set empty state text to display "No books found."
+            emptyStateTextView.setText( R.string.no_books );
         
         // Clear teh adapter of previous book data
         bookAdapter.clear();

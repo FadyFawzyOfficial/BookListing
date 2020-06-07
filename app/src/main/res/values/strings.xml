@@ -8,6 +8,9 @@
 	<!-- Text for Search Button -->
 	<string name = "search_button">Search</string>
 	
+	<!-- Search message when there is no input from the user -->
+	<string name = "search_message">Search for a book, Results will appear here.</string>
+	
 	<!-- Text to display in the list when there are no books -->
 	<string name = "no_books">No books found.</string>
 	
