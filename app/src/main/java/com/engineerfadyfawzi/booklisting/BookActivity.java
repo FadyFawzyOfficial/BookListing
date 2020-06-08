@@ -5,6 +5,7 @@ import androidx.loader.app.LoaderManager;
 import androidx.loader.app.LoaderManager.LoaderCallbacks;
 import androidx.loader.content.Loader;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -20,6 +21,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -181,6 +183,9 @@ public class BookActivity extends AppCompatActivity implements LoaderCallbacks< 
      */
     private void performSearch()
     {
+        // Hide keyboard when the user clicks search (key or button).
+        hideKeyboard( this );
+        
         // Get the user search input "word" to search for it.
         searchKeyword = String.valueOf( searchEditText.getText() );
         
@@ -216,6 +221,22 @@ public class BookActivity extends AppCompatActivity implements LoaderCallbacks< 
             // Update the empty state with no connection error message
             emptyStateTextView.setText( R.string.no_internet_connection );
         }
+    }
+    
+    /**
+     * Helper and Utility (General Form) method to hide the soft keyboard.
+     */
+    public static void hideKeyboard( Activity activity )
+    {
+        // Find the currently focused view, so we can grab the correct window token from it.
+        View view = activity.getCurrentFocus();
+        // If no view currently has focus, create a new one, just so we can grab a window token from it.
+        if ( view == null )
+            view = new View( activity );
+        
+        // Hide the keyboard
+        InputMethodManager inputMethodManager = ( InputMethodManager ) activity.getSystemService( INPUT_METHOD_SERVICE );
+        inputMethodManager.hideSoftInputFromWindow( view.getWindowToken(), 0 );
     }
     
     /**
