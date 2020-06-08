@@ -145,6 +145,59 @@ public class BookActivity extends AppCompatActivity implements LoaderCallbacks< 
             // Update the empty state with no connection error message
             emptyStateTextView.setText( R.string.no_internet_connection );
         }
+        
+        // Perform search when the user click the search button
+        searchButton.setOnClickListener( new View.OnClickListener()
+        {
+            @Override
+            public void onClick( View view )
+            {
+                performSearch();
+            }
+        } );
+    }
+    
+    /**
+     * Helper method to perform search by restarting the loader (wherever it's called),
+     * which will recreate {@link BookLoader} with new URL containing the user input for search.
+     */
+    private void performSearch()
+    {
+        // Get the user search input "word" to search for it.
+        searchKeyword = String.valueOf( searchEditText.getText() );
+        
+        // If there is a network connection, fetch data
+        if ( isConnected() )
+        {
+            // Clear the ListView as a new query will be kicked off
+            bookAdapter.clear();
+            
+            // Hide the empty state text view as the loading indicator will be displayed.
+            emptyStateTextView.setVisibility( View.GONE );
+            
+            // Show the loading indicator while new data is being fetched.
+            loadingIndicator.setVisibility( View.VISIBLE );
+            
+            // Get a reference to the LoaderManager, in order to interact with loaders.
+            LoaderManager loaderManager = getSupportLoaderManager();
+            
+            // Initialize the loader. pass in the int ID constant defined above and pass in null for
+            // the bundle. Pass in this activity for the LoaderCallbacks parameter (which is valid
+            // because this activity implements the LoaderCallbacks interface).
+            Log.i( TAG, "TEST: perform() method calls restartLoader() ..." );
+            loaderManager.restartLoader( BOOK_LOADER_ID, null, this );
+        }
+        else // Otherwise, display error
+        {
+            // Clear the ListView if there are old data as an error message will be displayed
+            bookAdapter.clear();
+            
+            // First, hide loading indicator (spinner) so error message will be visible
+            loadingIndicator.setVisibility( View.GONE );
+            
+            // Update the empty state with no connection error message
+            emptyStateTextView.setText( R.string.no_internet_connection );
+        }
     }
     
     /**
