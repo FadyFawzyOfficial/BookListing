@@ -15,9 +15,11 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -153,6 +155,22 @@ public class BookActivity extends AppCompatActivity implements LoaderCallbacks< 
             public void onClick( View view )
             {
                 performSearch();
+            }
+        } );
+    
+        // Perform search when the user click keyboard's search key
+        searchEditText.setOnEditorActionListener( new TextView.OnEditorActionListener()
+        {
+            @Override
+            public boolean onEditorAction( TextView textView, int actionId, KeyEvent event )
+            {
+                if ( actionId == EditorInfo.IME_ACTION_SEARCH )
+                {
+                    performSearch();
+                    return true;
+                }
+                
+                return false;
             }
         } );
     }
