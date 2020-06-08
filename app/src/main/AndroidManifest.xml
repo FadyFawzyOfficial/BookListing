@@ -14,8 +14,10 @@
 		android:supportsRtl = "true"
 		android:theme = "@style/AppTheme">
 		
+		<!-- Keep the keyboard hidden when the activity is launched -->
 		<activity
-			android:name = ".BookActivity">
+			android:name = ".BookActivity"
+			android:windowSoftInputMode = "stateAlwaysHidden">
 			<intent-filter>
 				<action android:name = "android.intent.action.MAIN" />
 				
